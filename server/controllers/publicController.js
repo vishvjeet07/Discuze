@@ -1,0 +1,48 @@
+import User from '../models/user.model.js';
+import Topic from '../models/topic.model.js';
+import Comment from '../models/comment.model.js';
+
+export const homepage = async (req,res) =>{
+  try {
+    let topics = await Topic.find();
+    res.json({success: true, topics, message:"Topic Fetched Successfully"});
+
+  } catch (error) {
+    res.json({success:false, message:error});
+  }
+}
+
+export const topicPage = async (req,res) =>{
+  try {
+    const name = req.params.name;
+    const topic = await Topic.findOne({ name }).populate('comment');
+    
+    const comments = 0;
+    res.json({success: true, topic, comments: topic.comment });
+  } catch (error) {
+      console.log(error);
+      res.status(500).send("Server Error");
+  }
+}
+
+export const comment = async (req,res) =>{
+  try {
+
+    let { comment } = req.body;
+    const name = req.params.name;
+    console.log(name);
+    const topic = await Topic.findOne({ name });
+    const newComment = await Comment.create({
+      comment,
+      topicId: topic._id
+    });
+    topic.comment.push(newComment._id);
+    await topic.save();
+    
+    res.json({success:true,message:"comment added"});
+
+  } catch (error) {
+      console.log(error);
+      res.status(500).send("Server Error");
+  }
+}
