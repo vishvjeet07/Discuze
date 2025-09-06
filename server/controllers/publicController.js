@@ -30,7 +30,6 @@ export const comment = async (req,res) =>{
 
     let { comment } = req.body;
     const name = req.params.name;
-    console.log(name);
     const topic = await Topic.findOne({ name });
     const newComment = await Comment.create({
       comment,
