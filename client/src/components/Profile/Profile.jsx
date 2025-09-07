@@ -11,9 +11,7 @@ function Profile() {
 
   const fetchUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + "/api/user/profile", {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(backendUrl + "/api/user/profile", {withCredentials: true});
       if (data.success) {
         setUserInfo(data.userInfo);
         setTopics(data.topics.map(t => t.name));
