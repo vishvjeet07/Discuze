@@ -29,7 +29,7 @@ export const register = async (req,res) =>{
         res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // only on production
-        sameSite: "none",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
         });
 
         res.json({ success: true, message: "Account created ",token});
@@ -67,7 +67,7 @@ export const login = async (req,res) =>{
         res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // only on production
-        sameSite: "none",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
         });
 
         res.json({success: true, message: "Login successful ",token});
