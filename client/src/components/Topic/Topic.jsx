@@ -56,7 +56,11 @@ function Topic() {
     fetchTime();
   }, []);
 
-return comments ? (
+  if (!topic || comments === null) {
+    return <Loading />;
+  }
+
+return (
   <div className="w-full flex flex-col h-screen bg-black">
     {/* Top section */}
     <div className="p-4">
@@ -65,9 +69,10 @@ return comments ? (
 
     {/* Comments list with scroll */}
     <ul className="flex-1 overflow-y-auto w-full">
-      {
-      comments ? comments.length === 0 ? (
-        <Loading />
+      {comments.length === 0 ? (
+        <li className="text-gray-400 italic p-4 text-center">
+          No comments yet
+        </li>
       ) : (
         comments.map((c) => (
           <li
@@ -83,7 +88,7 @@ return comments ? (
             <span className="font-semibold">{c.comment}</span>
           </li>
         )) 
-      ) : <Loading />
+      )
     }
     </ul>
 
@@ -92,7 +97,7 @@ return comments ? (
       <Comment name={name} refreshComment={fetchComments} />
     </div>
   </div>
-) : <Loading />
+)
 }
 
 export default Topic;
