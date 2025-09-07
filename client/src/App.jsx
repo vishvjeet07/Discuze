@@ -4,10 +4,8 @@ import Navbar from './components/Navbar/Navbar'
 import { Routes, Route, Router } from 'react-router-dom'
 import Topic from './components/Topic/Topic'
 import Signup from './components/Auth/Signup/Signup'
-import Dashboard from './components/Dashboard/Dashboard'
 import Login from './components/Auth/Login/Login'
 import Profile from './components/Profile/Profile'
-import Comment from './components/Comment/Comment'
 import Loading from './components/Loader/Loading'
 
 function App() {
