@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
 
 function Signup() {
-  const {setToken} = useContext(AppContext)
+  const {setToken,backendUrl} = useContext(AppContext)
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -49,15 +49,11 @@ function Signup() {
 
     try {
       setLoading(true);
-      const { data } = await axios.post("http://localhost:3000/api/auth/register", {
+      const { data } = await axios.post(backendUrl + `/api/auth/register`, {
         username: form.name,
         email: form.email,
         password: form.password,
-      },
-      // always remember to write this
-      {
-        withCredentials:true
-      });
+      },{withCredentials:true});
       if(data.success){
         localStorage.setItem('token', data.token);
         setToken(data.token)
