@@ -16,21 +16,27 @@ function TopicPage() {
       const { data } = await axios.get(backendUrl+'/api/topic');
       if(data.success){
         setTopics(data.topics);
-        data.topics.map((topic) => {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const fetchTime = async()=>{
+      const { data } = await axios.get(backendUrl+'/api/topic');
+        if(data.success){
+          data.topics.map((topic) => {
           const formatted = new Date(topic.createdAt).toLocaleString("en-US", {
             day: "numeric",
             month: "short",
           })
           setTime(formatted);
           ;})
-      }
-    } catch (error) {
-      console.log(error);
+        }  
     }
-  }
 
   useEffect(()=>{
     fetchAllTopics();
+    fetchTime()
   },[])
 
   return (
