@@ -26,8 +26,11 @@ export const register = async (req,res) =>{
             process.env.JWT,
         );
 
-        res.cookie("token", token);
-
+        res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // only on production
+        sameSite: "none",
+        });
 
         res.json({ success: true, message: "Account created ",token});
         
@@ -61,7 +64,12 @@ export const login = async (req,res) =>{
             { userId: user._id, email: user.email },
             process.env.JWT,
         );
-        res.cookie('token',token);
+        res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // only on production
+        sameSite: "none",
+        });
+
         res.json({success: true, message: "Login successful ",token});
     }catch (error) {
         res.json({ success: false, message: error.message});
