@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard/Dashboard'
 import Login from './components/Auth/Login/Login'
 import Profile from './components/Profile/Profile'
 import Comment from './components/Comment/Comment'
+import Loading from './components/Loader/Loading'
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/load" element={<Loading />} />
             <Route path="/topic/:name" element={<Topic />} />
             <Route path='/signup' element={<Signup />} /> {/* 👈 this is for Register page */}
             <Route path='/login' element={<Login />} />

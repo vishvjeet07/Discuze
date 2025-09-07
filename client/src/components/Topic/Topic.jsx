@@ -65,7 +65,8 @@ return comments ? (
 
     {/* Comments list with scroll */}
     <ul className="flex-1 overflow-y-auto w-full">
-      {comments.length === 0 ? (
+      {
+      comments ? comments.length === 0 ? (
         <li className="text-gray-400 italic p-4 text-center">
           No comments yet
         </li>
@@ -83,8 +84,9 @@ return comments ? (
             </div>
             <span className="font-semibold">{c.comment}</span>
           </li>
-        ))
-      )}
+        )) 
+      ) : <Loading />
+    }
     </ul>
 
     {/* Comment box sticky at bottom */}
