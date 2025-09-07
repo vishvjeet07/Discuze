@@ -8,7 +8,7 @@ export const homepage = async (req,res) =>{
     res.json({success: true, topics, message:"Topic Fetched Successfully"});
 
   } catch (error) {
-    res.json({success:false, message:error});
+    res.json({success:false, message: error.message});
   }
 }
 
@@ -17,15 +17,13 @@ export const topicPage = async (req,res) =>{
     const name = req.params.name;
     const topic = await Topic.findOne({ name }).populate('comment');
     
-    const comments = 0;
     res.json({success: true, topic, comments: topic.comment });
   } catch (error) {
-      console.log(error);
-      res.status(500).send("Server Error");
+      res.json({success: false, message: error.message});
+    }
   }
-}
-
-export const comment = async (req,res) =>{
+  
+  export const comment = async (req,res) =>{
   try {
 
     let { comment } = req.body;
@@ -39,9 +37,8 @@ export const comment = async (req,res) =>{
     await topic.save();
     
     res.json({success:true,message:"comment added"});
-
+    
   } catch (error) {
-      console.log(error);
-      res.status(500).send("Server Error");
-  }
+      res.json({success: false, message: error.message});
+    }
 }

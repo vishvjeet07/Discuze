@@ -32,7 +32,7 @@ export const register = async (req,res) =>{
         
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: "Account not created " });
+        res.json({ success: false, message: error.message });
     }
     
 }
@@ -63,7 +63,7 @@ export const login = async (req,res) =>{
         res.cookie('token',token);
         res.json({success: true, message: "Login successful ",token});
     }catch (error) {
-        res.json({ success: false, message: "Server error"});
+        res.json({ success: false, message: error.message});
     }
 }
 
@@ -73,6 +73,6 @@ export const logout = async (req,res) => {
         res.json({success:true, message:"Logout Successful"})
     } catch (error) {
         console.error("Login error:", error);
-        res.json({ success: false, message: "Server error"});
+        res.json({ success: false, message: error.message});
     }
 }
