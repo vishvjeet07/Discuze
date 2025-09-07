@@ -26,11 +26,7 @@ export const register = async (req,res) =>{
             process.env.JWT,
         );
 
-        res.cookie("token", token, {
-                    httpOnly: true,
-                    secure: true,       // required on https
-                    sameSite: "none",   // allow cross-site cookies
-                });
+        res.cookie("token", token);
 
 
         res.json({ success: true, message: "Account created ",token});
