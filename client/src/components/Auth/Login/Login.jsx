@@ -14,7 +14,7 @@ function Login() {
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
-  const {setToken} = useContext(AppContext);
+  const {setToken, backendUrl} = useContext(AppContext);
   const navigate = useNavigate();
 
   const validate = () => {
@@ -39,8 +39,7 @@ function Login() {
 
     try {
       setLoading(true);
-      const {data} = await axios.post(
-        "http://localhost:3000/api/auth/login",
+      const {data} = await axios.post(backendUrl + `/api/auth/login`,
         {
           email: form.email,
           password: form.password,
