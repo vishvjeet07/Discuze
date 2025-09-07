@@ -67,9 +67,7 @@ return comments ? (
     <ul className="flex-1 overflow-y-auto w-full">
       {
       comments ? comments.length === 0 ? (
-        <li className="text-gray-400 italic p-4 text-center">
-          No comments yet
-        </li>
+        <Loading />
       ) : (
         comments.map((c) => (
           <li
