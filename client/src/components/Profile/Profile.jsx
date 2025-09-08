@@ -61,7 +61,7 @@ function Profile() {
   return (
   <div className="bg-black min-h-screen text-white relative px-4 sm:px-6 lg:px-12">
   {/* Username top-left */}
-  <div className="absolute top-4 left-17 opacity-80 text-base sm:text-lg">
+  <div className="absolute top-4 left-7 lg:left-17 opacity-80 text-base sm:text-lg">
     <p>@{userInfo.username}</p>
   </div>
 
