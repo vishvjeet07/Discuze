@@ -5,12 +5,12 @@ import jwt from 'jsonwebtoken'
 export const register = async (req,res) =>{
     const { username, email, password } = req.body;
     if(username == "" || email == "" || password == ""){
-        res.json({ success: false, message: "All fields are required"});
+            return res.json({ success: false, message: "All fields are required"});
     }
     try {
         let user = await User.findOne({email});
         if(user){
-        res.json({ success: false, message: "User already exists"});
+            return res.json({ success: false, message: "User already exists"});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,11 +32,11 @@ export const register = async (req,res) =>{
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", 
         });
 
-        res.json({ success: true, message: "Account created ",token});
+        return res.json({ success: true, message: "Account created ",token});
         
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: error.message });
+        return res.json({ success: false, message: error.message });
     }
     
 }
