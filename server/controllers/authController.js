@@ -45,19 +45,19 @@ export const register = async (req,res) =>{
 export const login = async (req,res) =>{
     const { email, password } = req.body;
     if(email == "" || password == ""){
-        res.json({success: false, message: "Please enter email or password"});
+        return res.json({success: false, message: "Please enter email or password"});
     }
 
     try {
         const user = await User.findOne({email});
         if(!user){
-            res.json({ success: false, message: "User not found"});
+            return res.json({ success: false, message: "User not found"});
         }
 
         const isPasswordValid = await bcrypt.compare(password,user.password);
 
         if(!isPasswordValid){
-                res.json({ success: false, message: "Invalid credentials"});
+            return res.json({ success: false, message: "Invalid credentials"});
         }
 
         const token = jwt.sign(
