@@ -51,10 +51,12 @@ function Topic() {
   }
 
   useEffect(() => {
-    fetchTopic();
-    fetchComments();
-    fetchTime();
-  }, []);
+    if(name){
+      fetchTopic();
+      fetchComments();
+      fetchTime();
+    }
+  }, [name, backendUrl]);
 
   if (!topic || comments === null) {
     return <Loading />;

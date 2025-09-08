@@ -9,7 +9,7 @@ function SearchBar({ data }) {
   const onSearchHandler = (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    navigate('/topic/' + input);
+    navigate('/topic/'+input);
   };
 
   return (
@@ -19,7 +19,7 @@ function SearchBar({ data }) {
     >
       {/* Input */}
       <input
-        onChange={(e) => setInput(e.target.value)}
+        onChange={e => setInput(e.target.value)}
         value={input}
         type="text"
         placeholder="Search Topic"
