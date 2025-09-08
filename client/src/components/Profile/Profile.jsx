@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
+import { Trash2 } from 'lucide-react'
 
 function Profile() {
   const { backendUrl } = useContext(AppContext);
@@ -114,9 +115,9 @@ function Profile() {
               </Link>
               <button
                 onClick={() => deleteTopic(t)}
-                className="text-red-600 border border-red-600 px-3 py-1 rounded cursor-pointer w-20 text-sm sm:text-base text-center"
+                className="text-red-600 border border-red-600 px-3 py-1 rounded cursor-pointer text-sm sm:text-base text-center"
               >
-                Delete
+                <Trash2 />
               </button>
             </div>
           ))

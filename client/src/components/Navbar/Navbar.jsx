@@ -4,7 +4,7 @@ import SearchBar from '../SearchBar/SearchBar'
 import { AppContext } from '../../context/AppContext'
 import axios from 'axios';
 import { assests } from '../../assets/assests';
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 
 function Navbar() {
   const { token, setToken, backendUrl, navigate } = useContext(AppContext);
@@ -60,7 +60,7 @@ function Navbar() {
                 Logout
               </button>
               :
-              <a href="/profile"><h3>Profile</h3></a>
+              <a href="/profile"><User /></a>
           ) : (
             <>
               <Link to={'/signup'}>
@@ -101,7 +101,7 @@ function Navbar() {
                   Logout
                 </button>
                 :
-                <a href="/profile"><h3>Profile</h3></a>
+                <a href="/profile"><User /></a>
             ) : (
               <div className="flex flex-col gap-3 w-11/12">
                 <Link to={'/signup'}>
