@@ -16,27 +16,20 @@ function TopicPage() {
       const { data } = await axios.get(backendUrl+'/api/topic');
       if(data.success){
         setTopics(data.topics);
+        const formattedTimes = data.topics.map((topic) =>
+        new Date(topic.createdAt).toLocaleString("en-US", {
+          day: "numeric",
+          month: "short",
+        }))
+        setTime(formattedTimes);
       }
     } catch (error) {
       console.log(error);
     }
   }
-  const fetchTime = async()=>{
-      const { data } = await axios.get(backendUrl+'/api/topic');
-        if(data.success){
-          data.topics.map((topic) => {
-          const formatted = new Date(topic.createdAt).toLocaleString("en-US", {
-            day: "numeric",
-            month: "short",
-          })
-          setTime(formatted);
-          ;})
-        }  
-    }
 
   useEffect(()=>{
     fetchAllTopics();
-    fetchTime()
   },[])
 
   return (
@@ -49,7 +42,7 @@ function TopicPage() {
         <Link to={`topic/${t.name}`}>
           t/ {t.name}
         </Link>
-        <span className='opacity-50 text-sm pl-2'>{time}</span>
+        <span className='opacity-50 text-sm pl-2'>{time[index]}</span>
         </div>
       )) : <Loading />
       }
