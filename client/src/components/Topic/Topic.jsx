@@ -14,47 +14,28 @@ function Topic() {
 
   const { name } = useParams();
 
-  const fetchTopic = async()=>{
+  const fetchAllData = async()=>{
     try {
       const { data } = await axios.get(backendUrl+`/api/topic/${name}`);
       if(data.success){
         setTopic(data.topic);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const fetchComments = async()=>{
-    try {
-      const { data } = await axios.get(backendUrl+`/api/topic/${name}`);
-
-      if(data.success){
         setComments(data.comments);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  
-  const fetchTime = async()=>{
-    const { data } = await axios.get(backendUrl+`/api/topic/${name}`);
-      if(data.success){
-        data.comments.map((comment) => {
-        const formatted = new Date(comment.createdAt).toLocaleString("en-US", {
+        const formattedTimes = data.comments.map((comment) =>
+        new Date(comment.createdAt).toLocaleString("en-US", {
           day: "numeric",
           month: "short",
-        })
-        setTime(formatted);
-        ;})
-      }  
+        }))
+        setTime(formattedTimes);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
+
 
   useEffect(() => {
     if(name){
-      fetchTopic();
-      fetchComments();
-      fetchTime();
+      fetchAllData();
     }
   }, [name, backendUrl]);
 
@@ -76,7 +57,7 @@ return (
           No comments yet
         </li>
       ) : (
-        comments.map((c) => (
+        comments.map((c, index) => (
           <li
             key={c._id}
             className="text-gray-200 py-4 border-t border-gray-700 w-full pl-5 
@@ -85,7 +66,7 @@ return (
           >
             <div className="flex gap-2 mb-1.5 text-sm">
               <h4 className="opacity-90">t/{topic.name}</h4>
-              <span className="opacity-50">{time}</span>
+              <span className="opacity-50">{time[index]}</span>
             </div>
             <span className="font-semibold">{c.comment}</span>
           </li>
@@ -96,7 +77,7 @@ return (
 
     {/* Comment box sticky at bottom */}
     <div className="sticky bottom-0 w-full">
-      <Comment name={name} refreshComment={fetchComments} />
+      <Comment name={name} refreshComment={fetchAllData} />
     </div>
   </div>
 )
