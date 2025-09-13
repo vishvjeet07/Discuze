@@ -5,6 +5,8 @@ import { AppContext } from '../../context/AppContext'
 import axios from 'axios';
 import { assests } from '../../assets/assests';
 import { Menu, X, User } from "lucide-react";
+import { VscAccount } from "react-icons/vsc";
+
 
 function Navbar() {
   const { token, setToken, backendUrl, navigate } = useContext(AppContext);
@@ -60,7 +62,7 @@ function Navbar() {
                 Logout
               </button>
               :
-              <a href="/profile"><User /></a>
+              <a href="/profile"><VscAccount size={30} /></a>
           ) : (
             <>
               <Link to={'/signup'}>

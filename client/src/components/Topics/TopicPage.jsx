@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { AppContext } from '../../context/AppContext';
 import Loading from '../Loader/Loading';
+import { CgGhostCharacter } from "react-icons/cg";
 
 function TopicPage() {
 
@@ -38,12 +39,16 @@ function TopicPage() {
         topics ? topics.length === 0 ? (
         <div className="text-gray-900">No topics found</div>
       ) : topics.map((t, index) => (
-        <div key={index} className="w-full pl-5 py-3 border border-gray-700/30 bg-gray-800 text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-101 hover:shadow-lg cursor-pointer">
-        <Link to={`topic/${t.name}`}>
+        <>
+        <div key={index} className="flex w-full pl-5 py-3 text-white cursor-pointer">
+        <Link to={`topic/${t.name}`} className='opacity-70 flex hover:opacity-100 transition duration-200'>
+        <CgGhostCharacter className='m-1 size-5 hover:opacity-80' />
           t/ {t.name}
+        <span className='opacity-70 text-sm pl-2 mt-0.5'>{time[index]}</span>
         </Link>
-        <span className='opacity-50 text-sm pl-2'>{time[index]}</span>
         </div>
+        <hr className="w-310 h-0.5px bg-white opacity-30" />
+        </>
       )) : <Loading />
       }
     </div>
