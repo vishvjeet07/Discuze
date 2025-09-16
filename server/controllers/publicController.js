@@ -5,6 +5,10 @@ import Comment from '../models/comment.model.js';
 export const homepage = async (req,res) =>{
   try {
     let topics = await Topic.find();
+     for (let i = topics.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [topics[i], topics[j]] = [topics[j], topics[i]];
+    }
     res.json({success: true, topics, message:"Topic Fetched Successfully"});
 
   } catch (error) {
