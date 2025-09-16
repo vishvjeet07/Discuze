@@ -5,9 +5,13 @@ import { Link } from "react-router-dom";
 import { Trash2 } from 'lucide-react'
 
 function Profile() {
-  const [isProfile, setIsProfile] = useState(null)
+  const [isProfile, setIsProfile] = useState(() => {
+    const saved = localStorage.getItem("isProfile");
+    return saved ? JSON.parse(saved) : false; 
+  })
   const { backendUrl } = useContext(AppContext);
-  const [userInfo, setUserInfo] = useState([]);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [topics, setTopics] = useState([]);
   const [topic, setTopic] = useState("");
 
@@ -15,7 +19,8 @@ function Profile() {
     try {
       const { data } = await axios.get(backendUrl + "/api/user/profile", {withCredentials: true});
       if (data.success) {
-        setUserInfo(data.userInfo);
+        setUsername(data.userInfo.username);
+        setEmail(data.userInfo.email)
         setTopics(data.topics.map(t => t.name));
       }
     } catch (error) {
@@ -55,6 +60,25 @@ function Profile() {
       console.log(error);
     }
   }
+  
+  const handleUpdate = async(e) => {
+    try {
+      e.preventDefault();
+      const { data } = await axios.post(`${backendUrl}/api/user/update`,{
+        username,
+        email
+      }, { withCredentials: true});
+      if(data.success){
+        fetchUserData();
+      }
+    } catch (error) {
+        console.log(error);
+    }
+  }
+    
+  useEffect(() => {
+    localStorage.setItem("isProfile", JSON.stringify(isProfile));
+  }, [isProfile]);
 
   useEffect(() => {
     fetchUserData();
@@ -63,48 +87,62 @@ function Profile() {
   return (
     <div className="bg-black min-h-screen text-white relative px-4 sm:px-6 lg:px-12">
       {/* Navigation Toggle */}
-      <div className="absolute top-4 flex m-3">
+      <div className="absolute top-4 items-center justify-center flex m-3">
         <button
           onClick={() => setIsProfile(false)}
-          className="rounded-lg p-2 opacity-70 hover:opacity-100 transition duration-300 hover:border-0 hover:bg-gray-700"
+          className={`rounded-lg p-2 hover:opacity-100 transition duration-300 hover:border-0 hover:bg-gray-700 ${isProfile ? "opacity-70" : "opacity-100"}`}
           >
           Topics
         </button>
         <button
           onClick={() => setIsProfile(true)}
-        className="rounded-lg p-2 opacity-70 hover:opacity-100 transition duration-300 hover:border-0 hover:bg-gray-700">
+        className={`rounded-lg p-2 hover:opacity-100 transition duration-300 hover:border-0 hover:bg-gray-700  ${isProfile ? "opacity-100" : "opacity-70"}`}>
           Profile
         </button>
       </div>
 
       {isProfile ? (
         // Profile View
-        <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="flex flex-col items-start pt-20 right-30">
           <div className="text-center">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold mb-2">@{userInfo.username}</h1>
-              <p className="text-gray-400">Welcome to your profile</p>
+            <div className="p-6 max-w-md mx-auto">
+            <form onSubmit={handleUpdate} className="space-y-4">
+            <div className="flex gap-1">
+                <label htmlFor="username" className="mt-2">Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
             </div>
-            
-            <div className=" p-6 max-w-md mx-auto">
-              <h3 className="text-xl font-semibold mb-4">Profile Stats</h3>
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-gray-400">Total Topics:</span>
-                <span className="font-semibold">{topics.length}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Account Status:</span>
-                <span className="font-semibold text-green-400">Active</span>
-              </div>
+            <div className="flex gap-1">
+                <label htmlFor="username" className="mt-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 ml-8"
+                />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-300 mt-2"
+            >
+              Change
+            </button>
+          </form>
             </div>
           </div>
         </div>
       ) : (
         // Topics Management View
-        <div className="absolute top-30 opacity-90 text-base sm:text-lg">
+        <div className="absolute top-35 opacity-90 text-base sm:text-lg">
           {/* Username indicator */}
           <div className="absolute top-[-3rem] left-0 opacity-80 text-base sm:text-lg">
-            <p>@{userInfo.username}</p>
+            <p>@{username}</p>
           </div>
 
           {/* Create Topic Form */}
