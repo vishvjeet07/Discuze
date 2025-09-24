@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 function Comment({name,refreshComment}) {
   const [comment, setComment] = useState("");
@@ -12,7 +12,8 @@ function Comment({name,refreshComment}) {
 
     const { data } = await axios.post(backendUrl + `/api/topic/${name}`,{comment});
     if(data.success){
-        refreshComment();
+      refreshComment();
+      toast.success(data.message)
     }
     setComment("");
   }

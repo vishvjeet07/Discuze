@@ -6,6 +6,7 @@ import axios from 'axios';
 import { assests } from '../../assets/assests';
 import { Menu, X, User } from "lucide-react";
 import { VscAccount } from "react-icons/vsc";
+import toast from 'react-hot-toast';
 
 
 function Navbar() {
@@ -25,6 +26,7 @@ function Navbar() {
         localStorage.removeItem("token");
         navigate('/');
         fetchToken();
+        toast.success(data.message)
       }
     } catch (error) {
       console.log(error);

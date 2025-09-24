@@ -3,6 +3,7 @@ import axios from "axios";
 import { AppContext } from "../../context/AppContext";
 import { Link } from "react-router-dom";
 import { Trash2 } from 'lucide-react'
+import toast, { Toaster } from 'react-hot-toast';
 
 function Profile() {
   const [isProfile, setIsProfile] = useState(() => {
@@ -42,6 +43,7 @@ function Profile() {
       if (data.success) {
         setTopics([...topics, data.topics]); // update state with new topic
         setTopic(""); // clear input
+        toast.success(data.message)
       }
       await fetchUserData();
     } catch (error) {
@@ -55,6 +57,7 @@ function Profile() {
       )
       if(data.success){
         await fetchUserData()
+        toast.success(data.message)
       }
     } catch (error) {
       console.log(error);
@@ -69,10 +72,31 @@ function Profile() {
         email
       }, { withCredentials: true});
       if(data.success){
+      toast(data.message,
+        {
+          icon:'✅',
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+      );
         fetchUserData();
+      }else{
+         toast(data.message,
+        {
+          icon:'❌',
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+      )
       }
     } catch (error) {
-        console.log(error);
+        toast.error(error.message)
     }
   }
     
@@ -85,9 +109,9 @@ function Profile() {
   }, []);
 
   return (
-    <div className="bg-black min-h-screen text-white relative px-4 sm:px-6 lg:px-12">
+    <div className="bg-black min-h-screen text-white relative px-4 sm:px-6 lg:px-12 flex flex-col gap-8">
       {/* Navigation Toggle */}
-      <div className="absolute top-4 items-center justify-center flex m-3">
+      <div className="top-4 flex m-3">
         <button
           onClick={() => setIsProfile(false)}
           className={`rounded-lg p-2 hover:opacity-100 transition duration-300 hover:border-0 hover:bg-gray-700 ${isProfile ? "opacity-70" : "opacity-100"}`}
@@ -103,9 +127,9 @@ function Profile() {
 
       {isProfile ? (
         // Profile View
-        <div className="flex flex-col items-start pt-20 right-30">
+        <div className="flex flex-col items-start right-30">
           <div className="text-center">
-            <div className="p-6 max-w-md mx-auto">
+            <div className="max-w-md mx-auto">
             <form onSubmit={handleUpdate} className="space-y-4">
             <div className="flex gap-1">
                 <label htmlFor="username" className="mt-2">Username</label>
@@ -139,9 +163,9 @@ function Profile() {
         </div>
       ) : (
         // Topics Management View
-        <div className="absolute top-35 opacity-90 text-base sm:text-lg">
+        <div className="top-35 opacity-90 text-base sm:text-lg">
           {/* Username indicator */}
-          <div className="absolute top-[-3rem] left-0 opacity-80 text-base sm:text-lg">
+          <div className="top-[-4rem] left-0 opacity-80 text-base sm:text-lg">
             <p>@{username}</p>
           </div>
 

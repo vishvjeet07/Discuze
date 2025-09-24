@@ -24,11 +24,9 @@ export const profilePage = async (req, res) => {
 export const updateInfo = async (req, res) => {
   try {
     const token = req.cookies.token;
-    console.log(token);
     if (!token){
       return res.json({ success: false, message: "Please Login" });
     }
-    console.log(req.body);
     const user = jwt.verify(token, process.env.JWT);
     const { username, email } = req.body;
     const userInfo = await User.findByIdAndUpdate(user.userId,{

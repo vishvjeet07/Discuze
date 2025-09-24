@@ -7,6 +7,7 @@ import Signup from './components/Auth/Signup/Signup'
 import Login from './components/Auth/Login/Login'
 import Profile from './components/Profile/Profile'
 import Loading from './components/Loader/Loading'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   const location = useLocation();
@@ -23,7 +24,9 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/profile' element={<Profile />} />
           </Routes>
+          <Toaster position="top-right" reverseOrder={false} />
     </div>
+    
   )
 }
 

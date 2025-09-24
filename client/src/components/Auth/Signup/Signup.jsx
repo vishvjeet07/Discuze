@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
+import toast from "react-hot-toast";
 
 function Signup() {
   const {setToken,backendUrl} = useContext(AppContext)
@@ -58,6 +59,7 @@ function Signup() {
         localStorage.setItem('token', data.token);
         setToken(data.token)
         navigate('/dashboard');
+        toast.success(data.message)
       }
     } catch (err) {
       const msg =

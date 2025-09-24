@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { AppContext } from "../../../context/AppContext";
+import toast from "react-hot-toast";
 
 function Login() {
   const [form, setForm] = useState({
@@ -51,6 +52,7 @@ function Login() {
         localStorage.setItem('token', data.token);
         setToken(data.token)
         navigate("/");
+        toast.success(data.message)
       } 
     } catch (err) {
       const msg =

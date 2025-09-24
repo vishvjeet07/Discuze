@@ -49,7 +49,7 @@ return (
   <div className="w-full flex flex-col h-screen bg-black">
     {/* Top section */}
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-2 text-white">{topic?.name}</h1>
+      <h1 className="text-2xl font-bold mb-2 text-white">t/{topic?.name}</h1>
     </div>
 
     {/* Comments list with scroll */}
