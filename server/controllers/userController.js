@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import Topic from "../models/topic.model.js";
+import nodemailer from "nodemailer";
 
 export const profilePage = async (req, res) => {
   try {
@@ -128,9 +129,37 @@ export const deleteTopic = async (req, res) => {
   }
 };
 
-export const verifyEmail = async (req,res) =>{
+export const sendVerificationEmail = async (req,res) =>{
   try {
+    const token = req.cookies.token;
     
+    if(!token){
+      res.json({ success: false, message: "Please Login "});
+    }
+
+    
+    const decoded = jwt.verify(token,process.env.JWT);
+    const id = decoded.userId;
+    
+    let user = await User.findById(id);
+
+     const verifyUrl = `${process.env.BACKEND_URL}/auth/verify-email/${token}`;
+      const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+        },
+      });
+
+    await transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to: user?.email,
+      subject: "Verify your email",
+      html: `<h3>Click the link to verify your email:</h3>
+             <a href="${verifyUrl}">${verifyUrl}</a>`
+    });
+    res.json({ success: true, message: "Verification email sent!" });
   } catch (error) {
     
   }
