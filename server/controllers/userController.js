@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/user.model.js';
-import Topic from '../models/topic.model.js';
+import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
+import Topic from "../models/topic.model.js";
 
 export const profilePage = async (req, res) => {
   try {
@@ -9,13 +9,12 @@ export const profilePage = async (req, res) => {
       return res.json({ success: false, message: "Please Login" });
     }
     const user = jwt.verify(token, process.env.JWT);
-    const userInfo = await User.findById(user.userId).populate('topic');
-    
+    const userInfo = await User.findById(user.userId).select("-password").populate("topic");
+
     if (!userInfo) {
-      return res.json({ success: false, message: 'User not found' });
+      return res.json({ success: false, message: "User not found" });
     }
     res.json({ success: true, userInfo, topics: userInfo.topic });
-    
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -24,22 +23,25 @@ export const profilePage = async (req, res) => {
 export const updateInfo = async (req, res) => {
   try {
     const token = req.cookies.token;
-    if (!token){
+    if (!token) {
       return res.json({ success: false, message: "Please Login" });
     }
     const user = jwt.verify(token, process.env.JWT);
     const { username, email } = req.body;
-    const userInfo = await User.findByIdAndUpdate(user.userId,{
+    const userInfo = await User.findByIdAndUpdate(user.userId, {
       username: username,
-      email: email
+      email: email,
+    }).select("-password");
+
+    res.json({
+      success: true,
+      message: "Details Updated Successfully",
+      userInfo,
     });
-
-    res.json({ success: true, message: "Details Updated Successfully", userInfo})
   } catch (error) {
-    res.json({ success: false, message: "User Info not updated "});
+    res.json({ success: false, message: "User Info not updated " });
   }
-}
-
+};
 
 export const createTopic = async (req, res) => {
   try {
@@ -49,27 +51,35 @@ export const createTopic = async (req, res) => {
     }
 
     const user = jwt.verify(token, process.env.JWT);
-    const foundUser = await User.findOne({ email: user.email });
+    const foundUser = await User.findOne({ email: user.email }).select("-password");
 
     const { topic } = req.body;
     if (!topic) {
       return res.json({ success: false, message: "Please enter topic" });
     }
-    const newTopic = await Topic.create({
-      name: topic,
-      recipient: foundUser._id,
-    });
+    if (foundUser?.isVerified === true) {
+      const newTopic = await Topic.create({
+        name: topic,
+        recipient: foundUser._id,
+      });
 
-    foundUser.topic.push(newTopic._id);
-    await foundUser.save();
-
-    res.json({ success: true, message: "Topic created successfully", topic: newTopic });
-
+      foundUser.topic.push(newTopic._id);
+      await foundUser.save();
+      res.json({
+        success: true,
+        message: "Topic created successfully",
+        topic: newTopic,
+      });
+    }else{
+      res.json({
+        success: false,
+        message: "Please verify email to create Topic",
+      });
+    }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 export const deleteTopic = async (req, res) => {
   try {
@@ -79,7 +89,7 @@ export const deleteTopic = async (req, res) => {
     }
 
     const user = jwt.verify(token, process.env.JWT);
-    const foundUser = await User.findOne({ email: user.email });
+    const foundUser = await User.findOne({ email: user.email }).select("-password");
 
     if (!foundUser) {
       return res.json({ success: false, message: "User not found" });
@@ -87,13 +97,22 @@ export const deleteTopic = async (req, res) => {
 
     const { name } = req.params;
     if (!name) {
-      return res.json({ success: false, message: "Please provide a topic name" });
+      return res.json({
+        success: false,
+        message: "Please provide a topic name",
+      });
     }
 
-    const deletedTopic = await Topic.findOneAndDelete({ name, recipient: foundUser._id });
+    const deletedTopic = await Topic.findOneAndDelete({
+      name,
+      recipient: foundUser._id,
+    });
 
     if (!deletedTopic) {
-      return res.json({ success: false, message: "Topic not found or not authorized" });
+      return res.json({
+        success: false,
+        message: "Topic not found or not authorized",
+      });
     }
 
     await User.findByIdAndUpdate(
@@ -103,9 +122,16 @@ export const deleteTopic = async (req, res) => {
     );
 
     res.json({ success: true, message: "Deleted successfully", deletedTopic });
-
   } catch (error) {
     console.error("Error in deleteTopic:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const verifyEmail = async (req,res) =>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
