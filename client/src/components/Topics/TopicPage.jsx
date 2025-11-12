@@ -19,7 +19,6 @@ function TopicPage() {
       const { data } = await axios.get(backendUrl+'/api/topic');
       if(data.success){
         setTopics(data.topics);
-        console.log(data.topics);
         const formattedTimes = data.topics.map((topic) =>
         (topic.createdAt)
         )
