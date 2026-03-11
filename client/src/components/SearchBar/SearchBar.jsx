@@ -1,34 +1,35 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IoMdSearch } from "react-icons/io" // npm install react-icons
+import { IoMdSearch } from "react-icons/io"
 
 function SearchBar({ data }) {
   const navigate = useNavigate();
-  const [input, setInput] = useState(data ? data : '');
+  const [input, setInput] = useState(data ?? '');
+  const [focused, setFocused] = useState(false);
 
   const onSearchHandler = (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    navigate('/topic/'+input);
+    navigate('/topic/' + input.trim());
   };
 
   return (
     <form
       onSubmit={onSearchHandler}
-      className="relative max-w-2xl w-full md:h-12 h-10 flex items-center bg-gray-900 border border-gray-700 rounded-4xl overflow-hidden shadow-sm"
+      className="searchbar"
+      style={{ height: '42px', width: '100%' }}
     >
-      {/* Input */}
       <input
         onChange={e => setInput(e.target.value)}
         value={input}
         type="text"
-        placeholder="Search Topic"
-        className="w-2xl h-full pl-4 pr-10 bg-transparent text-gray-200 placeholder-gray-400 outline-none text-sm md:text-base"
+        placeholder="Search topics…"
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        aria-label="Search topics"
       />
-
-      {/* Search Icon */}
-      <button type="submit" className="absolute right-3 text-gray-400 hover:text-red-500 transition">
-        <IoMdSearch size={22} />
+      <button type="submit" className="search-btn" aria-label="Submit search">
+        <IoMdSearch size={20} />
       </button>
     </form>
   );

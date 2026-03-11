@@ -6,10 +6,9 @@ import Loading from "../Loader/Loading";
 import Comment from "../Comment/Comment";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { PiArrowFatUp,PiArrowFatDown  } from "react-icons/pi";
+import { Hash, MessageCircle, Clock } from "lucide-react";
 
 function Topic() {
-
   dayjs.extend(relativeTime);
   const { backendUrl } = useContext(AppContext);
   const [topic, setTopic] = useState(null);
@@ -18,76 +17,186 @@ function Topic() {
 
   const { name } = useParams();
 
-  const fetchAllData = async()=>{
+  const fetchAllData = async () => {
     try {
-      const { data } = await axios.get(backendUrl+`/api/topic/${name}`);
-      if(data.success){
+      const { data } = await axios.get(backendUrl + `/api/topic/${name}`);
+      if (data.success) {
         setTopic(data.topic);
         setComments(data.comments);
-        const formattedTimes = data.comments.map((comment) =>
-                  (comment.createdAt)
-          )
-        setTime(formattedTimes);
+        setTime(data.comments.map((c) => c.createdAt));
       }
     } catch (error) {
       console.log(error);
     }
-  }
-
+  };
 
   useEffect(() => {
-    if(name){
-      fetchAllData();
-    }
+    if (name) fetchAllData();
   }, [name, backendUrl]);
 
   if (!topic || comments === null) {
     return <Loading />;
   }
 
-return (
-  <div className="w-full flex flex-col h-screen bg-black">
-    {/* Top section */}
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-2 text-white">t/{topic?.name}</h1>
-    </div>
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: 'calc(100vh - 60px)',
+      background: 'var(--bg-base)',
+    }}>
+      {/* Topic Header */}
+      <div
+        className="animate-fade-in"
+        style={{
+          padding: '20px 24px 16px',
+          borderBottom: '1px solid var(--border-subtle)',
+          background: 'var(--bg-surface)',
+          flexShrink: 0,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+          <div style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '10px',
+            background: 'var(--accent-subtle)',
+            border: '1px solid var(--border-accent)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <Hash size={18} color="var(--accent)" />
+          </div>
+          <div>
+            <h1 style={{
+              fontSize: '1.2rem',
+              fontWeight: 700,
+              color: 'var(--text-primary)',
+              letterSpacing: '-0.02em',
+              lineHeight: '1.2',
+            }}>
+              {topic?.name}
+            </h1>
+            <span style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              color: 'var(--text-muted)',
+              fontSize: '0.78rem',
+              marginTop: '2px',
+            }}>
+              <MessageCircle size={11} />
+              {comments.length} comment{comments.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+        </div>
+      </div>
 
-    {/* Comments list with scroll */}
-    <ul className="flex-1 overflow-y-auto w-full">
-      {comments.length === 0 ? (
-        <li className="text-gray-400 italic p-4 text-center">
-          No comments yet
-        </li>
-      ) : (
-        comments.map((c, index) => (
-          <li
-            key={c._id}
-            className="text-gray-200 py-4 border-t border-gray-700 w-full pl-5 
-                      transition-all duration-200 ease-in-out 
-                      hover:border hover:border-t-gray-500 hover:rounded-lg"
-          >
-            <div className="flex gap-2 mb-1.5 text-sm">
-              <h4 className="opacity-90">t/{topic.name}</h4>
-              <span className="opacity-50">{dayjs(time[index]).fromNow()}</span>
+      {/* Comments */}
+      <ul
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          listStyle: 'none',
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        {comments.length === 0 ? (
+          <li style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            color: 'var(--text-muted)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '12px',
+          }}>
+            <div style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '14px',
+              background: 'var(--bg-elevated)',
+              border: '1px solid var(--border-default)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <MessageCircle size={22} color="var(--text-muted)" />
             </div>
-            <span className="font-semibold">{c.comment}</span>
-            {/* <div className="mt-2 flex gap-4 items-center bg-gray-900 w-22 pl-2 p-1 rounded-2xl">
-              <PiArrowFatUp />
-              <span className="font-bold">4</span>
-              <PiArrowFatDown />
-            </div> */}
+            <div>
+              <p style={{ color: 'var(--text-secondary)', fontWeight: 500, marginBottom: '4px' }}>
+                No messages yet
+              </p>
+              <p style={{ fontSize: '0.82rem' }}>Be the first one to start the conversation!</p>
+            </div>
           </li>
-        )) 
-      )
-    }
-    </ul>
+        ) : (
+          comments.map((c, index) => (
+            <li
+              key={c._id}
+              className="comment-item"
+              style={{
+                animation: 'fadeIn 0.3s ease both',
+                animationDelay: `${index * 30}ms`,
+              }}
+            >
+              {/* Meta row */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '8px',
+              }}>
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  color: 'var(--accent)',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  background: 'var(--accent-subtle)',
+                  padding: '2px 8px',
+                  borderRadius: '9999px',
+                  border: '1px solid var(--border-accent)',
+                }}>
+                  <Hash size={10} />
+                  {topic.name}
+                </span>
+                <span style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px',
+                  color: 'var(--text-muted)',
+                  fontSize: '0.75rem',
+                }}>
+                  <Clock size={11} />
+                  {time ? dayjs(time[index]).fromNow() : ''}
+                </span>
+              </div>
 
-    {/* Comment box sticky at bottom */}
-    <div className="sticky bottom-0 w-full">
-      <Comment name={name} refreshComment={fetchAllData} />
+              {/* Comment text */}
+              <p style={{
+                color: 'var(--text-primary)',
+                fontSize: '0.9rem',
+                lineHeight: '1.6',
+                fontWeight: 400,
+              }}>
+                {c.comment}
+              </p>
+            </li>
+          ))
+        )}
+      </ul>
+
+      {/* Sticky Comment Box */}
+      <div style={{ flexShrink: 0 }}>
+        <Comment name={name} refreshComment={fetchAllData} />
+      </div>
     </div>
-  </div>
-)
+  );
 }
 
 export default Topic;
